@@ -1,0 +1,10 @@
+README.md — 索引 + 关键结论速览
+01-architecture-summary.md — 整体架构总结：定位、四支柱、五大核心概念、8 模块×5 plane、智能体端到端流程图
+02-agent-service-deep-dive.md — agent-service 五层（access/session/queue/taskcontrol/engine）详解、依赖、入口装配、Task 状态机、现有测试、落地缺口
+03-l0-l1-architecture.md — 厘清三套同名不同义的「L 编号」，重点给出平台 L0/L1 定义
+04-java-refactor-test-plan.md — ①全量功能特性清单 ②接口文档 ③七维测试基线（性能/可靠/安全含权限+沙箱/兼容/资料/部署升级迁移/观测）+ 四层测试策略
+几个核心结论：
+
+L0/L1：L0 = 系统级架构层（声明式系统边界 + §4 的 65 条编号约束）；L1 = 模块级架构层（把 L0 落成 Spring 组合/契约/测试/证据）。一句话「L0 定义平台被允许成为什么，L1 定义每个 Spring 模块被允许如何成为它」。L1 不是成熟度标签——成熟度由 architecture-status.yaml 的二元 shipped: 决定。
+重构状态：6 个核心模块已全部 Java 化（agent-service 142 文件最完整，接入 openjiuwen/agent-core-java 引擎）。
+⚠️ 最大风险点（务必关注）：重构后 agent-service 实际对外暴露的是 A2A JSON-RPC（POST /a2a/），但主干契约 openapi-v1.yaml 仍写 /v1/runs REST——两者分叉。我已把它列为高优先级回归风险区，并在测试方案 §2.4 给出「以代码实证为准 + 把 /v1/runs 当契约漂移用例」的建议。
